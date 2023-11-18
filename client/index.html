@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>Document</title>
+    <script
+      src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js'
+      integrity='sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=='
+      crossorigin='anonymous'
+      referrerpolicy='no-referrer'
+    ></script>
+  </head>
+  <body>
+    <h1>Chatting Project With Nodejs</h1>
+
+    <div id='output'></div>
+    <div>
+      <input type='text' placeholder='who' id='whoInput' />
+      <input type='text' placeholder='message' id='msgInput' />
+      <button id='sendBtn'>send</button>
+    </div>
+
+    <script>
+      const socketClient = io.connect('http://localhost:9000');
+      socketClient.emit('chatwithserver');
+
+      const btn = document.getElementById('sendBtn');
+
+      const whoInputTag = document.getElementById('whoInput');
+      const msgInputTag = document.getElementById('msgInput');
+      const outputTag = document.getElementById('output');
+
+      btn.addEventListener('click', () => {
+        const who = whoInputTag.value;
+        const msg = msgInputTag.value;
+
+        socketClient.emit('chatwithserverWithMessage', { who: who, msg: msg });
+      });
+
+      socketClient.on('chatwithserverWithMessage', (data) => {
+        outputTag.innerHTML += '<p><b>' + data.who + '</b>: ' + data.msg + '</p>';
+      });
+    </script>
+  </body>
+</html>
